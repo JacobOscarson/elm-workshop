@@ -7,6 +7,7 @@ import Html.Attributes exposing (class, target, href, property, defaultValue)
 import Html.Events exposing (..)
 import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (..)
+import Auth
 
 
 main : Program Never
@@ -23,7 +24,7 @@ getQueryString : String -> String
 getQueryString query =
     -- See https://developer.github.com/v3/search/#example for how to customize!
     "access_token="
-        ++ "FILL_IN_REAL_TOKEN"
+        ++ Auth.token
         ++ "&q="
         ++ query
         ++ "+language:elm&sort=stars&order=desc"
