@@ -5,7 +5,6 @@ import Json.Decode exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, target, href, property, defaultValue)
 import Html.Events exposing (..)
-import Auth
 import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (..)
 
@@ -24,7 +23,7 @@ getQueryString : String -> String
 getQueryString query =
     -- See https://developer.github.com/v3/search/#example for how to customize!
     "access_token="
-        ++ Auth.token
+        ++ "FILL_IN_REAL_TOKEN"
         ++ "&q="
         ++ query
         ++ "+language:elm&sort=stars&order=desc"
@@ -137,11 +136,12 @@ type Msg
 
 decodeResponse : Value -> Msg
 decodeResponse json =
-    -- TODO use decodeValue to decode the response into a Msg.
-    --
-    -- Hint: look at the definition of Msg and
-    -- the definition of responseDecoder
-    HandleSearchError (Just "TODO decode the response!")
+    case decodeValue responseDecoder json of
+        Ok fromJs ->
+            HandleSearchResponse fromJs
+
+        Err err ->
+            HandleSearchError (Just err)
 
 
 port githubSearch : String -> Cmd msg
