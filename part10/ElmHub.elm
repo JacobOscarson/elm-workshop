@@ -83,6 +83,7 @@ viewMinStarsError message =
 type Msg
     = Search
       -- TODO add a constructor for Options OptionsMsg
+    | Options OptionsMsg
     | SetQuery String
     | DeleteById Int
     | HandleSearchResponse (List SearchResult)
@@ -101,6 +102,14 @@ update msg model =
 
         SetQuery query ->
             ( { model | query = query }, Cmd.none )
+
+        Options msg ->
+            let
+                newOptions : SearchOptions
+                newOptions =
+                    updateOptions msg model.options
+            in
+                ( { model | options = newOptions }, Cmd.none )
 
         HandleSearchResponse results ->
             ( { model | results = results }, Cmd.none )
@@ -157,7 +166,7 @@ view model =
             , span [ class "tagline" ] [ text "Like GitHub, but for Elm things." ]
             ]
         , div [ class "search" ]
-            [ text "TODO call viewOptions here. Use Html.map to avoid a type mismatch!"
+            [ Html.map Options (viewOptions model.options)
             , div [ class "search-input" ]
                 [ input [ class "search-query", onInput SetQuery, defaultValue model.query ] []
                 , button [ class "search-button", onClick Search ] [ text "Search" ]
